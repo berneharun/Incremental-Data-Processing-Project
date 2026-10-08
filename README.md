@@ -72,7 +72,7 @@ for table, sources in entities.items():
           .awaitTermination()
       )
 ```
-
+## 3. Transforming and Deduplicating Data
 ### Silver Layer
 
 Silver layer contains `Deduplication Logic(MERGE)` that is most important part of Incremental Data Processing. It avoids append data which `primary_key` is already exist(even if other columns are different), instead of appending duplicate primary keys, it keeps only the data from the latest batch in the table. If there isn't a data which has same primary key, appends it to table without any process. I defined `MERGE` functions as `upsert_to_silver()`
@@ -213,7 +213,7 @@ products_df = products_read_transformations(bronze_table_path)
     .start()
     .awaitTermination())
 ```
-
+## 4. Modeling Data
 ### Gold Layer
 
 Gold layer is a star schema: `dim_customers`, `dim_products`, `dim_regions` and `fact_orders`. Unlike bronze and silver, it does not use Structured Streaming. Each notebook reads the silver table as a normal batch and merges it into the gold table. This is safe because silver already guarantees one row per primary key.
